@@ -1,10 +1,12 @@
 import stripe
 from nameko.extensions import DependencyProvider
 
-from nameko_stripe import APP_NAME, APP_URL, VERSION
 
-
+APP_NAME = 'nameko-stripe'
+APP_URL = 'https://github.com/marcuspen/nameko-stripe'
+VERSION = '0.1'
 APP_INFO = dict(name=APP_NAME, url=APP_URL, version=VERSION)
+
 STRIPE_CONFIG_KEY = 'STRIPE'
 
 

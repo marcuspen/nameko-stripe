@@ -1,11 +1,28 @@
+import ast
+import re
 from setuptools import setup, find_packages
 
-from nameko_stripe import VERSION, APP_NAME, APP_URL
+
+_version_re = re.compile(r'VERSION\s+=\s+(.*)')
+_app_name_re = re.compile(r'APP_NAME\s+=\s+(.*)')
+_app_url_re = re.compile(r'APP_URL\s+=\s+(.*)')
+
+
+def get_param(pattern):
+    return ast.literal_eval(pattern.search(file_string).group(1))
+
+
+with open('nameko_stripe/stripe_dep.py', 'r') as f:
+    file_string = f.read()
+    version = get_param(_version_re)
+    app_name = get_param(_app_name_re)
+    app_url = get_param(_app_url_re)
+
 
 setup(
-    name=APP_NAME,
-    version=VERSION,
-    url=APP_URL,
+    name=app_name,
+    version=version,
+    url=app_url,
     description='Stripe dependency for Nameko',
     author='marcuspen',
     author_email='me@marcuspen.com',
