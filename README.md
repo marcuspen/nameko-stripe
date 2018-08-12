@@ -25,10 +25,14 @@ class MyService(object):
         return self.stripe.Charge.list()
 ```
 
-You will need to insert your api_key and log level into your config.yaml:
+## Setup
+
+Simply add your api_key and log level into your config.yaml:
 
 ```yaml
 AMQP_URI: 'amqp://guest:guest@localhost'
+...
+
 STRIPE:
   api_key: abc123
   log_level: info
