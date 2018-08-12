@@ -22,7 +22,7 @@ setup(
             "requests==2.19.1",
         ]
     },
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python",
         "Operating System :: MacOS :: MacOS X",

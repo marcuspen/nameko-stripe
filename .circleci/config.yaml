@@ -4,7 +4,7 @@ jobs:
   # test-3.7: &test-template
   build:
     docker:
-      - image: circleci/python:3.7.0
+      - image: circleci/python:3.6.1
 
       working_directory: ~/repo
 
