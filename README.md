@@ -2,6 +2,10 @@
 
 Stripe dependency for Nameko
 
+## Requirements
+
+Python 3.4 - 3.7: Other versions may work but not supported.
+
 ## Installation
 
 ```
