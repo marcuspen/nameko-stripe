@@ -1,7 +1,8 @@
 version: 2
 
 jobs:
-  test-3.7: &test-template
+  # test-3.7: &test-template
+  build:
     docker:
       - image: circleci/python:3.7.0
 
@@ -37,24 +38,24 @@ jobs:
             path: test-reports
             destination: test-reports
 
-  test-3.6:
-    <<: *test-template
-    docker:
-      - image: circleci/python:3.6-jessie
-  test-3.5:
-    <<: *test-template
-    docker:
-      - image: circleci/python:3.5-jessie
-  test-3.4:
-    <<: *test-template
-    docker:
-      - image: circleci/python:3.5-jessie
+  # test-3.6:
+  #   <<: *test-template
+  #   docker:
+  #     - image: circleci/python:3.6-jessie
+  # test-3.5:
+  #   <<: *test-template
+  #   docker:
+  #     - image: circleci/python:3.5-jessie
+  # test-3.4:
+  #   <<: *test-template
+  #   docker:
+  #     - image: circleci/python:3.5-jessie
 
-workflows:
-  version: 2
-  test:
-    jobs:
-      - test-3.7
-      - test-3.6
-      - test-3.5
-      - test-3.4
+# workflows:
+#   version: 2
+#   test:
+#     jobs:
+#       - test-3.7
+#       - test-3.6
+#       - test-3.5
+#       - test-3.4
