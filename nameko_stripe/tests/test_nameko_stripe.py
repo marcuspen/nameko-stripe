@@ -42,6 +42,7 @@ def test_start(stripe_dependency, mock_stripe):
 
     assert stripe_dependency.client == mock_stripe
     assert stripe_dependency.client.log == 'debug'
+    assert stripe_dependency.client.api_key == 'abc123'
     assert stripe_dependency.client.set_app_info.call_args_list == [
         call(name=APP_NAME, url=APP_URL, version=VERSION)
     ]

@@ -4,7 +4,7 @@ from nameko.extensions import DependencyProvider
 
 APP_NAME = 'nameko-stripe'
 APP_URL = 'https://github.com/marcuspen/nameko-stripe'
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 APP_INFO = dict(name=APP_NAME, url=APP_URL, version=VERSION)
 
 STRIPE_CONFIG_KEY = 'STRIPE'
@@ -24,6 +24,7 @@ class Stripe(DependencyProvider):
         self.client = stripe
         self.client.log = self.log_level
         self.client.set_app_info(**APP_INFO)
+        self.client.api_key = self.api_key
 
     def stop(self):
         self.client = None
