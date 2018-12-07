@@ -1,7 +1,7 @@
 from mock import Mock, patch, call
 
 import pytest
-from ..stripe_dep import Stripe, VERSION, APP_NAME, APP_URL
+from nameko_stripe.stripe_dep import Stripe, VERSION, APP_NAME, APP_URL
 
 
 @pytest.fixture
