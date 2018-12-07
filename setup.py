@@ -42,10 +42,12 @@ setup(
             "flake8==3.5.0",
             "pylint==2.1.1",
             "pytest==3.7.1",
-            "requests==2.19.1",
+            "requests==2.20",
         ]
     },
-    packages=find_packages(),
+    zip_safe=True,
+    packages=find_packages(exclude=['tests', 'tests.*']),
+    license='MIT License',
     classifiers=[
         "Programming Language :: Python",
         "Operating System :: MacOS :: MacOS X",
