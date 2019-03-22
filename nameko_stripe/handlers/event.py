@@ -5,15 +5,13 @@ from fnmatch import fnmatch
 from functools import partial
 
 from eventlet.event import Event
-from nameko.exceptions import BadRequest, ConfigurationError, serialize
-from nameko.web.handlers import HttpRequestHandler
+from nameko.exceptions import serialize
 from nameko.web.server import WebServer
-from werkzeug.exceptions import BadRequest, HTTPException, Unauthorized
+from werkzeug.exceptions import BadRequest, HTTPException
 from werkzeug.routing import Map, Rule
 from werkzeug.wrappers import Request, Response
 
 
-from nameko_stripe import constants
 from nameko_stripe.handlers.webhook import WebhookHandler
 
 
@@ -21,16 +19,12 @@ logger = logging.getLogger(__name__)
 
 
 class Router:
-
     def __init__(self, container, handlers=None):
         self.container = container
         self.handlers = handlers or set()
 
     def __call__(self, request):
         return self.handle(request)
-
-    def add_handler(self, handler):
-        self.handlers.add(handler)
 
     def handle(self, request):
         events = set()
@@ -43,16 +37,15 @@ class Router:
         [event.wait() for event in events]
 
     def parse_event_name(self, request):
-        data = request.data.decode('utf8')
+        data = request.data.decode("utf8")
         try:
-            return json.loads(data)['type']
-        except:
+            return json.loads(data)["type"]
+        except Exception:
             logger.warning("Cannot parse Stripe webhook", exc_info=True)
             raise BadRequest("Cannot parse Stripe webhook")
 
 
 class EventServer(WebServer):
-
     def make_url_map(self):
 
         routes = defaultdict(list)
@@ -64,7 +57,7 @@ class EventServer(WebServer):
 
         for route, providers in routes.items():
             url, method = route
-            rule = Rule(url, methods=method.split(','))
+            rule = Rule(url, methods=method.split(","))
             rule.endpoint = Router(self.container, providers)
             url_map.add(rule)
 
@@ -75,7 +68,6 @@ class EventServer(WebServer):
 
 
 class WsgiApp(object):
-
     def __init__(self, server):
         self.url_map = server.make_url_map()
 
@@ -94,7 +86,7 @@ class WsgiApp(object):
             else:
                 status_code = 500
             error_dict = serialize(exc)
-            payload = u'Error: {exc_type}: {value}\n'.format(**error_dict)
+            payload = u"Error: {exc_type}: {value}\n".format(**error_dict)
             rv = Response(payload, status=status_code)
         else:
             rv = Response("OK", status=200)
@@ -117,7 +109,7 @@ class EventHandler(WebhookHandler):
 
         event = self.parse_event(request)
 
-        args = (event['type'], event)
+        args = (event["type"], event)
         kwargs = request.path_values
 
         return args, kwargs
@@ -128,8 +120,12 @@ class EventHandler(WebhookHandler):
 
         self.check_signature(args, kwargs)
         self.container.spawn_worker(
-            self, args, kwargs, context_data=context_data,
-            handle_result=partial(self.handle_result, event))
+            self,
+            args,
+            kwargs,
+            context_data=context_data,
+            handle_result=partial(self.handle_result, event),
+        )
 
     def handle_result(self, event, worker_ctx, result, exc_info):
         event.send(result, exc_info)

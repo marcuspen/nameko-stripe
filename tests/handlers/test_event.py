@@ -15,10 +15,7 @@ def test_unit_event_handler_missing_config_key():
     with pytest.raises(ConfigurationError) as exc:
         event_handler.setup()
 
-    assert (
-        str(exc.value) ==
-        "Please provide SECRET_KEY for stripe API communication"
-    )
+    assert str(exc.value) == "Please provide SECRET_KEY for stripe API communication"
 
 
 @pytest.mark.parametrize("setting", ("SECRET_KEY", "ENDPOINT_SECRET"))
@@ -32,9 +29,8 @@ def test_unit_event_handler_missing_secrets(stripe_config, setting):
     with pytest.raises(ConfigurationError) as exc:
         event_handler.setup()
 
-    assert (
-        str(exc.value) ==
-        "Please provide {} for stripe API communication".format(setting)
+    assert str(exc.value) == "Please provide {} for stripe API communication".format(
+        setting
     )
 
 
@@ -45,10 +41,7 @@ def test_unit_event_handler_passed_settings():
     endpoint_secret = "whsec_****"
 
     event_handler = EventHandler(
-        "source.chargeable",
-        path=path,
-        api_key=api_key,
-        endpoint_secret=endpoint_secret
+        "source.chargeable", path=path, api_key=api_key, endpoint_secret=endpoint_secret
     )
     event_handler.container = Mock(config={})
     event_handler.setup()
@@ -108,15 +101,11 @@ def test_event_handler_multiple_handlers(stripe_config, make_webhook, send_webho
     assert response.status_code == 200
     assert response.text == "OK"
 
-    assert (
-        handle_source_chargeable_tracker.call_args ==
-        call("source.chargeable", webhook)
+    assert handle_source_chargeable_tracker.call_args == call(
+        "source.chargeable", webhook
     )
     assert handle_source_failed_tracker.call_count == 0
-    assert (
-        handle_source_events_tracker.call_args ==
-        call("source.chargeable", webhook)
-    )
+    assert handle_source_events_tracker.call_args == call("source.chargeable", webhook)
 
 
 def test_event_handler_wildcard(stripe_config, make_webhook, send_webhook):
@@ -157,18 +146,9 @@ def test_event_handler_wildcard(stripe_config, make_webhook, send_webhook):
     assert response.status_code == 200
     assert response.text == "OK"
 
-    assert (
-        handle_source_events_tracker.call_args ==
-        call("source.failed", webhook)
-    )
-    assert (
-        handle_source_failed_tracker.call_args ==
-        call("source.failed", webhook)
-    )
-    assert (
-        handle_failure_events_tracker.call_args ==
-        call("source.failed", webhook)
-    )
+    assert handle_source_events_tracker.call_args == call("source.failed", webhook)
+    assert handle_source_failed_tracker.call_args == call("source.failed", webhook)
+    assert handle_failure_events_tracker.call_args == call("source.failed", webhook)
     assert handle_charge_events_tracker.call_count == 0
     assert handle_charge_failed_tracker.call_count == 0
 
@@ -184,9 +164,7 @@ def test_event_handler_passed_secrets(make_webhook, send_webhook):
         name = "service"
 
         @event_handler(
-            "source.chargeable",
-            api_key=api_key,
-            endpoint_secret=endpoint_secret
+            "source.chargeable", api_key=api_key, endpoint_secret=endpoint_secret
         )
         def handle_stripe_event(self, event_type, event_payload):
             tracker(event_type, event_payload)
@@ -244,9 +222,7 @@ def test_event_handler_signature_verification_failure(
     assert "Signature verification failed" in response.text
 
 
-def test_event_handler_event_parsing_failure(
-    stripe_config, make_webhook, send_webhook
-):
+def test_event_handler_event_parsing_failure(stripe_config, make_webhook, send_webhook):
 
     tracker = Mock()
 

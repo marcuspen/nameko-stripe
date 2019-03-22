@@ -10,12 +10,14 @@ from nameko_stripe import constants
 @pytest.fixture
 def stripe_config(web_config):
     config = web_config.copy()
-    config.update({
-        "STRIPE": {
-            "SECRET_KEY": "sk_test_EWX...FbN",
-            "ENDPOINT_SECRET": "whsec_6Yi...Igu",
-        },
-    })
+    config.update(
+        {
+            "STRIPE": {
+                "SECRET_KEY": "sk_test_EWX...FbN",
+                "ENDPOINT_SECRET": "whsec_6Yi...Igu",
+            }
+        }
+    )
     return config
 
 
@@ -35,6 +37,7 @@ def make_webhook():
         }
         payload.update(fields)
         return payload
+
     return make
 
 
@@ -63,4 +66,5 @@ def send_webhook(stripe_config, make_webhook, runner_factory, web_session):
             data=json.dumps(webhook),
             headers={"Stripe-Signature": signature_header},
         )
+
     return send

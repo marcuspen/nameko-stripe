@@ -8,13 +8,13 @@ from nameko_stripe.constants import VERSION, APP_NAME, APP_URL
 
 @pytest.fixture
 def mock_stripe():
-    with patch('nameko_stripe.dependency_provider.stripe') as stripe:
+    with patch("nameko_stripe.dependency_provider.stripe") as stripe:
         yield stripe
 
 
 @pytest.fixture
 def stripe_dependency(stripe_config):
-    stripe_config["STRIPE"]["LOG_LEVEL"] = 'debug'
+    stripe_config["STRIPE"]["LOG_LEVEL"] = "debug"
     dependency = Stripe()
     dependency.container = Mock()
     dependency.container.config = stripe_config

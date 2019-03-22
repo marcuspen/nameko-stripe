@@ -1,15 +1,9 @@
 import logging
-from collections import defaultdict
-from functools import partial
 
 import stripe
-from eventlet.event import Event
-from nameko.exceptions import BadRequest, ConfigurationError, serialize
+from nameko.exceptions import ConfigurationError
 from nameko.web.handlers import HttpRequestHandler
-from nameko.web.server import WebServer
 from werkzeug.exceptions import BadRequest, HTTPException, Unauthorized
-from werkzeug.routing import Map, Rule
-from werkzeug.wrappers import Request, Response
 
 
 from nameko_stripe import constants
@@ -19,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 
 class WebhookHandler(HttpRequestHandler):
-
     def __init__(self, path=None, api_key=None, endpoint_secret=None, **kwargs):
         self.api_key = api_key
         self.endpoint_secret = endpoint_secret
@@ -34,7 +27,7 @@ class WebhookHandler(HttpRequestHandler):
             self.endpoint_secret = self.endpoint_secret or config["ENDPOINT_SECRET"]
         except KeyError as exc:
             raise ConfigurationError(
-                'Please provide {} for stripe API communication'.format(exc.args[0])
+                "Please provide {} for stripe API communication".format(exc.args[0])
             ) from exc
 
         if not self.url:
@@ -45,8 +38,8 @@ class WebhookHandler(HttpRequestHandler):
     def parse_event(self, request):
         try:
             return stripe.Webhook.construct_event(
-                request.data.decode('utf8'),
-                request.headers.get('Stripe-Signature'),
+                request.data.decode("utf8"),
+                request.headers.get("Stripe-Signature"),
                 self.endpoint_secret,
                 api_key=self.api_key,
             )

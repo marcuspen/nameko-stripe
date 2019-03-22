@@ -15,10 +15,7 @@ def test_unit_webhook_handler_missing_config_key():
     with pytest.raises(ConfigurationError) as exc:
         webhook_handler.setup()
 
-    assert (
-        str(exc.value) ==
-        "Please provide SECRET_KEY for stripe API communication"
-    )
+    assert str(exc.value) == "Please provide SECRET_KEY for stripe API communication"
 
 
 @pytest.mark.parametrize("setting", ("SECRET_KEY", "ENDPOINT_SECRET"))
@@ -32,9 +29,8 @@ def test_unit_webhook_handler_missing_secrets(stripe_config, setting):
     with pytest.raises(ConfigurationError) as exc:
         webhook_handler.setup()
 
-    assert (
-        str(exc.value) ==
-        "Please provide {} for stripe API communication".format(setting)
+    assert str(exc.value) == "Please provide {} for stripe API communication".format(
+        setting
     )
 
 
@@ -45,9 +41,7 @@ def test_unit_webhook_handler_passed_settings():
     endpoint_secret = "whsec_****"
 
     webhook_handler = WebhookHandler(
-        path,
-        api_key=api_key,
-        endpoint_secret=endpoint_secret
+        path, api_key=api_key, endpoint_secret=endpoint_secret
     )
     webhook_handler.container = Mock(config={})
     webhook_handler.setup()
@@ -124,7 +118,6 @@ def test_webhook_handler_passed_path(stripe_config, make_webhook, send_webhook):
 
 
 def test_webhook_handler_returning(stripe_config, make_webhook, send_webhook):
-
     class Service:
         name = "service"
 

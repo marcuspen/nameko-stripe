@@ -38,9 +38,10 @@ setup(
     ],
     extras_require={
         'dev': [
+            "black==19.3b0",
             "coverage==4.5.1",
             "flake8==3.5.0",
-            "pylint==2.1.1",
+            "pylint==2.3.0",
             "pytest==3.7.1",
             "requests==2.20",
         ]
