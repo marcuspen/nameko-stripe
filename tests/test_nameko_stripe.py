@@ -14,7 +14,6 @@ def mock_stripe():
 
 @pytest.fixture
 def stripe_dependency(stripe_config):
-    stripe_config["STRIPE"]["LOG_LEVEL"] = "debug"
     dependency = Stripe()
     dependency.container = Mock()
     dependency.container.config = stripe_config
@@ -22,23 +21,22 @@ def stripe_dependency(stripe_config):
     return dependency
 
 
-def test_setup(stripe_config, stripe_dependency):
+def test_setup(stripe_config, stripe_dependency, mock_stripe):
     stripe_dependency.setup()
-
-    assert stripe_dependency.api_key == stripe_config["STRIPE"]["SECRET_KEY"]
-    assert stripe_dependency.log_level == stripe_config["STRIPE"]["LOG_LEVEL"]
-
-
-def test_start(stripe_config, stripe_dependency, mock_stripe):
-    stripe_dependency.setup()
-    stripe_dependency.start()
 
     assert stripe_dependency.client == mock_stripe
-    assert stripe_dependency.client.log == stripe_config["STRIPE"]["LOG_LEVEL"]
     assert stripe_dependency.client.api_key == stripe_config["STRIPE"]["SECRET_KEY"]
     assert stripe_dependency.client.set_app_info.call_args_list == [
         call(name=APP_NAME, url=APP_URL, version=VERSION)
     ]
+
+
+def test_setup_log_level(stripe_config, stripe_dependency, mock_stripe):
+    stripe_config["STRIPE"]["LOG_LEVEL"] = "debug"
+
+    stripe_dependency.setup()
+
+    assert stripe_dependency.client.log is "debug"
 
 
 def test_stop(stripe_dependency):
