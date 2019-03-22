@@ -81,13 +81,9 @@ class WsgiApp(object):
         except HTTPException as exc:
             rv = exc
         except Exception as exc:
-            if isinstance(exc, BadRequest):
-                status_code = 400
-            else:
-                status_code = 500
             error_dict = serialize(exc)
             payload = u"Error: {exc_type}: {value}\n".format(**error_dict)
-            rv = Response(payload, status=status_code)
+            rv = Response(payload, status=500)
         else:
             rv = Response("OK", status=200)
         return rv(environ, start_response)

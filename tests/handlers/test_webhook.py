@@ -175,3 +175,23 @@ def test_webhook_handler_event_parsing_failure(
     assert response.status_code == 400
     assert response.reason == "BAD REQUEST"
     assert "Cannot parse Stripe webhook" in response.text
+
+
+def test_webhook_handler_unhandled_exception(stripe_config, make_webhook, send_webhook):
+    class Boom(Exception):
+        pass
+
+    class Service:
+        name = "service"
+
+        @webhook_handler
+        def handle_stripe_webhook(self, webhook):
+            raise Boom("Boom!")
+
+    webhook = make_webhook()
+
+    response = send_webhook(Service, webhook)
+
+    assert response.status_code == 500
+    assert response.reason == "INTERNAL SERVER ERROR"
+    assert "Boom!" in response.text
