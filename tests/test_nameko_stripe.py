@@ -16,8 +16,8 @@ def mock_stripe():
 def test_config():
     return {
         'STRIPE': {
-            'api_key': 'abc123',
-            'log_level': 'debug',
+            'API_KEY': 'abc123',
+            'LOG_LEVEL': 'debug',
         }
     }
 

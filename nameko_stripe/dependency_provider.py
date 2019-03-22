@@ -11,8 +11,8 @@ class Stripe(DependencyProvider):
 
     def setup(self):
         config = self.container.config[constants.CONFIG_KEY]
-        self.api_key = config['api_key']
-        self.log_level = config['log_level']
+        self.api_key = config['API_KEY']
+        self.log_level = config['LOG_LEVEL']
 
     def start(self):
         self.client = stripe
