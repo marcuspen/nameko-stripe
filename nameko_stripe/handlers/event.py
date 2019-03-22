@@ -1,6 +1,7 @@
 import json
 import logging
 from collections import defaultdict
+from fnmatch import fnmatch
 from functools import partial
 
 from eventlet.event import Event
@@ -35,7 +36,7 @@ class Router:
         events = set()
         event_name = self.parse_event_name(request)
         for handler in self.handlers:
-            if event_name == handler.event_name:
+            if fnmatch(event_name, handler.event_name):
                 event = Event()
                 events.add(event)
                 handler.handle_request(request, event)

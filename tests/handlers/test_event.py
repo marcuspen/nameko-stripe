@@ -109,7 +109,7 @@ def test_event_handler_multiple_handlers(stripe_config, make_webhook, send_webho
     assert response.text == "OK"
 
     assert (
-		handle_source_chargeable_tracker.call_args ==
+        handle_source_chargeable_tracker.call_args ==
         call("source.chargeable", webhook)
     )
     assert handle_source_failed_tracker.call_count == 0
@@ -117,6 +117,60 @@ def test_event_handler_multiple_handlers(stripe_config, make_webhook, send_webho
         handle_source_events_tracker.call_args ==
         call("source.chargeable", webhook)
     )
+
+
+def test_event_handler_wildcard(stripe_config, make_webhook, send_webhook):
+
+    handle_source_events_tracker = Mock()
+    handle_charge_events_tracker = Mock()
+    handle_source_failed_tracker = Mock()
+    handle_charge_failed_tracker = Mock()
+    handle_failure_events_tracker = Mock()
+
+    class Service:
+        name = "service"
+
+        @event_handler("source.*")
+        def handle_source_events(self, event_type, event_payload):
+            handle_source_events_tracker(event_type, event_payload)
+
+        @event_handler("charge.failed")
+        def handle_charge_failed(self, event_type, event_payload):
+            handle_charge_failed_tracker(event_type, event_payload)
+
+        @event_handler("source.failed")
+        def handle_source_failed(self, event_type, event_payload):
+            handle_source_failed_tracker(event_type, event_payload)
+
+        @event_handler("charge.*")
+        def handle_charge_events(self, event_type, event_payload):
+            handle_charge_events_tracker(event_type, event_payload)
+
+        @event_handler("*.failed")
+        def handle_failure_events(self, event_type, event_payload):
+            handle_failure_events_tracker(event_type, event_payload)
+
+    webhook = make_webhook(type="source.failed")
+
+    response = send_webhook(Service, webhook)
+
+    assert response.status_code == 200
+    assert response.text == "OK"
+
+    assert (
+        handle_source_events_tracker.call_args ==
+        call("source.failed", webhook)
+    )
+    assert (
+        handle_source_failed_tracker.call_args ==
+        call("source.failed", webhook)
+    )
+    assert (
+        handle_failure_events_tracker.call_args ==
+        call("source.failed", webhook)
+    )
+    assert handle_charge_events_tracker.call_count == 0
+    assert handle_charge_failed_tracker.call_count == 0
 
 
 def test_event_handler_passed_secrets(make_webhook, send_webhook):
