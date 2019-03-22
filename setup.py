@@ -16,7 +16,7 @@ with open('README.md') as readme:
     long_description = readme.read()
 
 
-with open('nameko_stripe/stripe_dep.py') as f:
+with open('nameko_stripe/constants.py') as f:
     file_string = f.read()
     version = get_param(_version_re)
     app_name = get_param(_app_name_re)
