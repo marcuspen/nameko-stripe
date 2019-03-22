@@ -45,6 +45,11 @@ setup(
             "requests==2.20",
         ]
     },
+    entry_points={
+        'pytest11': [
+            'nameko_stripe=nameko_stripe.pytest'
+        ]
+    },
     zip_safe=True,
     packages=find_packages(exclude=['tests', 'tests.*']),
     license='MIT License',
