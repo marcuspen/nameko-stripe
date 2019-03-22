@@ -1,5 +1,6 @@
 from mock import Mock, patch, call
 
+from nameko.exceptions import ConfigurationError
 import pytest
 
 from nameko_stripe import Stripe
@@ -29,6 +30,17 @@ def test_setup(stripe_config, stripe_dependency, mock_stripe):
     assert stripe_dependency.client.set_app_info.call_args_list == [
         call(name=APP_NAME, url=APP_URL, version=VERSION)
     ]
+
+
+def test_setup_missing_secrets():
+    dependency = Stripe()
+    dependency.container = Mock()
+    dependency.container.config = {}
+
+    with pytest.raises(ConfigurationError) as exc:
+        dependency.setup()
+
+    assert str(exc.value) == "Please provide SECRET_KEY for stripe API communication"
 
 
 def test_setup_log_level(stripe_config, stripe_dependency, mock_stripe):
