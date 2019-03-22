@@ -16,7 +16,7 @@ with open('README.md') as readme:
     long_description = readme.read()
 
 
-with open('nameko_stripe/stripe_dep.py') as f:
+with open('nameko_stripe/constants.py') as f:
     file_string = f.read()
     version = get_param(_version_re)
     app_name = get_param(_app_name_re)
@@ -38,11 +38,17 @@ setup(
     ],
     extras_require={
         'dev': [
+            "black==19.3b0",
             "coverage==4.5.1",
             "flake8==3.5.0",
-            "pylint==2.1.1",
+            "pylint==2.3.0",
             "pytest==3.7.1",
             "requests==2.20",
+        ]
+    },
+    entry_points={
+        'pytest11': [
+            'nameko_stripe=nameko_stripe.pytest'
         ]
     },
     zip_safe=True,
@@ -54,7 +60,6 @@ setup(
         "Operating System :: POSIX",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
