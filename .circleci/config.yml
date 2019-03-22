@@ -45,10 +45,6 @@ jobs:
     <<: *test-template
     docker:
       - image: circleci/python:3.5-jessie
-  test-3.4:
-    <<: *test-template
-    docker:
-      - image: circleci/python:3.4-jessie
 
 workflows:
   version: 2
@@ -57,4 +53,3 @@ workflows:
       - test-3.7
       - test-3.6
       - test-3.5
-      - test-3.4
