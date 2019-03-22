@@ -1,13 +1,15 @@
 from mock import Mock, patch, call
 
 import pytest
-from nameko_stripe.stripe_dep import Stripe, VERSION, APP_NAME, APP_URL
+
+from nameko_stripe import Stripe
+from nameko_stripe.constants import VERSION, APP_NAME, APP_URL
 
 
 @pytest.fixture
 def mock_stripe():
-    with patch('nameko_stripe.stripe_dep.stripe') as s:
-        yield s
+    with patch('nameko_stripe.dependency_provider.stripe') as stripe:
+        yield stripe
 
 
 @pytest.fixture
